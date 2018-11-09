@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<metal:macro use-macro="master">
+	<html>
+		
+		<metal:slot fill-slot="title">		
+			<title> Personal Details Form </title>
+			<script type="text/javascript" src="${request.static_url('cc_al_scf:static/jquery-1.7.2.min.js')}"></script>
+     
+			<script type="text/javascript" src="${request.static_url('cc_al_scf:static/javascript/register.js')}"></script>
+ 
+			<!--script>
+			$(document).ready(function(){
+
+				// jQuery methods go here...
+				$("#email").on('change', function(){
+					// check with DB here
+					alert("Test alert here");   
+
+					$.ajax({
+							data :{
+								email : $('#email').val()
+							},
+							type: "POST",
+							url: "/signup"
+							
+						}).done(function(data){
+							if(data.error){
+								$('#failure_alert').text(data.error).show();
+								$('#success_alert').hide();
+							}
+							else{
+								$('#success_alert').text(data.state).show();
+								$('#failure_alert').hide();
+							}
+					});
+				});
+
+			}); 
+
+
+
+			</script-->
+
+		</metal:slot>
+				
+		<metal:slot fill-slot="content">
+		
+			<body>
+				<h1>
+					Enter your personal details on the ${page}
+				</h1>
+				<br>
+				<!--provide here the form to fill -->
+				<form action="/userlogin" method="post">
+					<div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">First Name: </label>
+							<input class = "col-md-2" type="text" id = "fname" name = "fname">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">Last Name:   </label>
+							<input class = "col-md-2" type="text" id = "lname" name = "lname">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">Email:   </label>
+							<input class = "col-md-2" type="text" id = "email" name = "email">
+							<span id = "failure_alert" style="color:red;font-weight:bold;display:none">User already exists</span>
+							<span id = "success_alert" style="color:green;font-weight:bold;display:none">User name is valid</span>
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">Password:   </label>
+							<input class = "col-md-2" type="text" id = "pword" name = "pword">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">Re-enter Password:   </label>
+							<input class = "col-md-2" type="text" id = "rpword" name = "rpword">
+						</div>		
+										
+						<div class = "col-md-12">
+							<label class = "col-md-2">Contact Number:   </label>
+							<input class = "col-md-2" type="text" id = "contact" name = "contact">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">Company Name:   </label>
+							<input class = "col-md-2" type="text" id = "cname" name = "cname">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">Company Url:   </label>
+							<input class = "col-md-2" type="text" id = "curl" name = "curl">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">AddressLine 1:   </label>
+							<input class = "col-md-2" type="text" id = "al1" name = "al1">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">AddressLine 2:   </label>
+							<input class = "col-md-2" type="text" id = "al2" name = "al2">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">City:   </label>
+							<input class = "col-md-2" type="text" id = "city" name = "city">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">State:   </label>
+							<input class = "col-md-2" type="text" id = "state" name = "state">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">Country:   </label>
+							<input class = "col-md-2" type="text" id = "country" name = "country">
+						</div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">Zipcode:   </label>
+							<input class = "col-md-2" type="text" id = "zip" name = "zip">
+						</div>
+						<input class = "col-md-offset-3" type="submit"  value ="SignUp"></input>				
+					</div>
+				</form>
+			</body>
+		</metal:slot>
+	</html>
+</metal:macro>

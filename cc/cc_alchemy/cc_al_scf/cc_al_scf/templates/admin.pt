@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome Page here</title>
+</head>
+<body>
+<h1>Hi ${first} ${last} !!</h1>
+<input type = "button" onclick="location.href='logout';" class = "col-md-2 col-lg-2" value = "LogOut">
+</body>
+</html>

@@ -1,0 +1,3 @@
+[run]
+source = cc_al_scf
+omit = cc_al_scf/test*

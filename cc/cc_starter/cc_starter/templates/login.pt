@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<metal:macro use-macro="master">
+	<html>
+	<metal:slot fill-slot="title">		
+	    	<title>Login page </title>
+		
+		<script>
+			function loginAlert(){
+			alert("New alert from function here")
+			alert("create here :PPPPPPPPPPP")
+			email = document.getElementById('emailid').value
+			console.log("test")
+			alert("create here :PPPPPPPPPPP")
+			password = document.getElementById('password').value
+			if(email === "" || password === ""){
+					alert("The fields cannot be empty")
+					return false
+			}
+			//add code for check if the user exists in DB
+
+			return true
+		}
+
+		</script>
+		</metal:slot>
+		<metal:slot fill-slot="content">
+		<body>
+
+				    
+			<h1> Login Page</h1>
+			<form action = "/userlogin" onsubmit="return loginAlert()" method="post">
+				<div>
+					<div class = "col-md-12">
+						<label class = "col-md-2">User -emailid: </label>
+						<input class = "col-md-2" type="text" id = "emailid" name = "emailid">
+					</div>				
+					<div class = "col-md-12">
+						<label class = "col-md-2">Password:   </label>
+						<input class = "col-md-2" type="text" id = "password" name = "password">
+					</div>
+				</div>
+				<div class = "col-md-12">				
+							<input type="submit" name = "submit" class = "col-md-2 col-lg-2" value="SignIn" />
+							<input type="button" onclick="location.href='signup';" class = "col-md-2 col-lg-2" value = "SignUp">
+				</div>
+			</form>
+		</body>
+		</metal:slot>
+	</html>
+</metal:macro>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<metal:macro use-macro="master">
+	<html lang="en">		
+		<metal:slot fill-slot="title">		
+	    	<title>Login page ${title}</title>
+	    	<script type="text/javascript" src="${request.static_url('cc_al_scf:static/jquery-1.7.2.min.js')}"></script>
+	    	<script type="text/javascript" src="${request.static_url('cc_al_scf:static/javascript/login.js')}"></script>
+	    	
+          <!--script>
+          	function loginAlert(){
+				alert("New alert from function here")
+				alert("create here :PPPPPPPPPPP")
+				email = document.getElementById('emailid').value
+				//alert("create here :PPPPPPPPPPP")
+				password = document.getElementById('password').value
+				if(email === "" || password === ""){
+						alert("The fields cannot be empty")
+						return false
+				}
+				else{//add code for check if the user exists in DB
+					$.ajax({
+	        		data:{
+	        			email : $('#email').val(),
+	        			pwd : $('#password').val()
+	        		},
+	        		type :"POST",
+	        		url:"/loginauth"
+	        	}).done(function(data){
+	        		alert(data);
+	        		return true
+				}
+				
+				
+			}
+
+          </script-->
+	    </metal:slot>	
+	    <metal:slot fill-slot="javascript_head_slot">
+		    <script type="text/javascript" src="//localhost:8080/testpyramid/static/javascript/login.js"></script>
+		</metal:slot>	
+		<metal:slot fill-slot="content">
+			<body>
+
+			    <!--table>
+			      <tr tal:repeat="row 'apple', 'banana', 'pineapple'">
+			        <td tal:repeat="col 'juice', 'muffin', 'pie'">
+			           <span tal:replace="row.capitalize()" /> <span tal:replace="col" />
+			        </td>
+			      </tr>
+			    </table-->
+			<h1> ${title}</h1>
+				<form action = "/userlogin" method="post">
+					<div>
+						<div class = "col-md-12">
+							<label class = "col-md-2">User -emailid: </label>
+							<input class = "col-md-2" type="text" id = "emailid" name = "emailid">
+						</div>				
+						<div class = "col-md-12">
+							<label class = "col-md-2">Password:   </label>
+							<input class = "col-md-2" type="text" id = "password" name = "password">
+						</div>
+					</div>
+					<div class = "col-md-12">				
+								<input type="submit" id = "submit" name = "submit" class = "col-md-2 col-lg-2" value="SignIn" />
+								<input type="button" onclick="location.href='signup';" class = "col-md-2 col-lg-2" value = "SignUp">
+					</div>
+				</form>
+			</body>
+		</metal:slot>
+	</html>
+</metal:macro>
