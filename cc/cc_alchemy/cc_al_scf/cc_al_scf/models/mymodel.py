@@ -159,7 +159,7 @@ class UserInfo(Base):
 class UserRoles(Base):
     __tablename__ = 'roles'
     id = Column(Integer, primary_key=True)  
-    email = Column(ForeignKey('user_info.email'),nullable=False)
+    email = Column(ForeignKey('user_info.email',ondelete='CASCADE'),nullable=False)
     role = Column(Text, nullable=False)  
     user = relationship('UserInfo') 
 

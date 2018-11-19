@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome to Admin Page here</title>
+<script type="text/javascript" src="../static/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../static/javascript/admin.js"></script>
+
+</head>
+
+<body>
+<h1>Welcome to admin page here !!</h1>
+<h2>Admin users</h2>
+<table class="table table-striped">
+<tr>
+    {% for column in Columns %}
+        <td>{{ column }}</td>
+    {% endfor %}
+</tr>
+       {% for row in admin %}    
+           <tr>   
+            {% for col in row %}
+                <td>{{ col }} </td>
+            {% endfor %}                
+           </tr>
+       {% endfor %}
+</table>
+<h2>Generic users</h2>
+<table class="table table-striped">
+<tr>
+    {% for column in Columns %}
+        <td>{{ column }}</td>
+    {% endfor %}
+</tr>
+       {% for row in generic %}
+           <tr>   
+            {% for col in row %}
+                <td>{{ col }} </td>
+            {% endfor %}     
+            <td><input type="button" value = "Delete" id = "delete_user" name= {{row[2]}}></td>            
+           </tr>
+       {% endfor %}
+</table>
+
+<input type = "button" onclick="location.href='logout';" class = "col-md-2 col-lg-2" value = "LogOut">
+</body>
+</html>

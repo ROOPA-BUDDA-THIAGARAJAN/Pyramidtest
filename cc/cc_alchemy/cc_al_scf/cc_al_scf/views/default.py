@@ -12,6 +12,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 
 from .. import models #import mymodel
 from ..models import mymodel
+# from pyramid.renderers import render_template
 from pyramid.renderers import render_to_response
 #from .updatedb import adduser
 from pyramid.compat import escape
@@ -24,6 +25,44 @@ engine = create_engine('postgresql://postgres:password@localhost:5432/pyramid_db
 mymodel.Base.metadata.create_all(engine)
 mymodel.DBSession.configure(bind=engine)
 
+def get_details():	
+	"""[summary]To retirve the admin and generic user data.
+	
+	[description]
+	Fetch details from the database about the user details for admin login
+	return admin and genric user object as list
+
+	"""
+	all_users = mymodel.DBSession.query(models.mymodel.UserInfo).all()
+	all_role = mymodel.DBSession.query(models.mymodel.UserRoles).all()
+	print(all_users)
+	print(all_role)
+	admin = []
+	generic =  []
+	for user,role in zip(all_users,all_role):
+		print(user.first_name,user.last_name,role.role)
+		if(role.role == 'admin'):
+			admin.append([user.first_name,user.last_name,user.email])
+		else:
+			generic.append([user.first_name,user.last_name,user.email])
+
+	return([admin,generic])
+
+def delete_user(user_mail):
+	"""[summary]
+	
+	[description]
+	
+	Arguments:
+		user_mail {[type]} -- [description] email of the user to be deleted.
+
+	"""
+	# query to delete the user with the primary key goes here
+	with transaction.manager:
+		mymodel.DBSession.query(models.mymodel.UserInfo).filter(models.mymodel.UserInfo.email.like(user_mail)).delete(synchronize_session='fetch')
+		#mymodel.DBSession.commit()
+	#mymodel.DBSession.query(models.mymodel.UserRoles).filter(models.mymodel.UserRoles.email.like(user_mail)).delete(synchronize_session='fetch')
+	return ('success')
 
 @view_config(route_name = 'login_auth',renderer = 'json')
 def login_auth(request):
@@ -33,19 +72,43 @@ def login_auth(request):
 	pwd = data['pwd']
 	auth = mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserInfo.email.like(email), models.mymodel.UserInfo.password.like(pwd))).first()
 	#print("length of the query login is ", len(auth))
-	print("auth is ",auth)
-	role_check = mymodel.DBSession.query(models.mymodel.UserRoles).filter(and_(models.mymodel.UserRoles.email.like(email), models.mymodel.UserRoles.role.like("admin"))).first()
-	print("role_check is ",role_check)
 	#email_exists = mymodel.DBSession.query(models.mymodel.UserInfo).filter(models.mymodel.UserInfo.email == email).all()
 	#if(len(auth)>1):
 	#	pwd = mymodel.DBSession.query(models.mymodel.UserInfo).filter(models.mymodel.UserInfo.email == email).all()
 	#exist = (len(auth)!=0)
-	#print(exists)
-	# get fname , lname amd redirect with role
+	print("auth is ",auth)
+	role_check = mymodel.DBSession.query(models.mymodel.UserRoles).filter(and_(models.mymodel.UserRoles.email.like(email), models.mymodel.UserRoles.role.like("admin"))).first()
+	print("role_check is ",role_check)
+	print(exists)
 	return {
-	'state' : "success"
+	'state': 'success'
 	}
 
+@view_config(route_name='del_user',renderer = '../templates/admin.jinja2')
+def del_user(request):
+	print(request.POST)
+	mail = request.POST['email']
+	print(mail)
+	print("inside the delete user function")
+	if delete_user(mail) == 'success':
+		return  {
+		'state' :'success'
+		}
+	else:
+		return {
+		'state' : 'failure'
+		}
+
+	# adgen = get_details()
+	# return succes code state
+	# faliure - ret failure
+	"""
+	return {
+	'Columns' : ['First Name','Last Name','Email'],
+	'admin': adgen[0],
+	'generic': adgen[1]
+	}
+	"""
 
 @view_config(route_name='login', renderer = '../templates/login.pt')
 def login(request):
@@ -57,6 +120,9 @@ def userlogin(request):
 	print("printing request here")	
 	print(request.POST)
 	#print(request.POST['emailid'])
+	# route_name = 'userlogin/{entrytype}'
+	# i.e 'userlogin/login'
+	# 'userlogin/signup'
 	try:
 		if(request.POST['fname']):
 			post_data = request.POST	
@@ -111,7 +177,6 @@ def userlogin(request):
 			                          'last' : "lname"
 			                          })
 			else:
-				# add code to render tabe data to the admin page
 				return render_to_response(renderer_name = '../templates/admin.pt',
 			                          value = {
 			                          'first' : "admin",
@@ -130,20 +195,24 @@ def userlogin(request):
 		email = request.POST['emailid']# exxception here......
 		pwd = request.POST['password']
 		cred_exists = mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserInfo.email == email,models.mymodel.UserInfo.password == pwd)).all()
-		role_admin =  mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserRoles.email == email,models.mymodel.UserRoles.role == "admin")).all()
+		role_admin =  mymodel.DBSession.query(models.mymodel.UserRoles).filter(and_(models.mymodel.UserRoles.email == email,models.mymodel.UserRoles.role == "admin")).all()
 		print(len(cred_exists))
 		print(len(role_admin))
 		if(len(cred_exists)>=1):
-			# user credentaila exsts here , henc login
-			# get data from DB here.
-			# print(cred_exists)
-			# print(cred_exists[0].first_name)
-			# print(cred_exists[0].last_name)
+			# user credentials exsts here , hence login			
 			if(len(role_admin)>=1):
-				return render_to_response(renderer_name = '../templates/admin.pt',
+				# code to move to a function
+				adgen = get_details()
+				admin = adgen[0]
+				generic = adgen[1]
+				print("admin users are", admin)
+				print("generic users are",generic)
+
+				return render_to_response(renderer_name = '../templates/admin.jinja2',
 			                          value = {
-			                          'first': cred_exists[0].first_name,
-			                          'last': cred_exists[0].last_name
+			                          'Columns' : ['First Name','Last Name','Email'],
+			                          'admin': admin,
+			                          'generic': generic
 			                          })
 			else:
 				return render_to_response(renderer_name = '../templates/home.pt',
@@ -153,7 +222,7 @@ def userlogin(request):
 			                          })
 		else:
 			print("incorect credentials")
-			render_to_response('../templates/login.pt',
+			return render_to_response('../templates/login.pt',
                               {'alert': 'credentials invalid',
                               'title' : 'Login Here'},
                               request=request)

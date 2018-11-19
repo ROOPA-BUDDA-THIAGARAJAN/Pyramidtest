@@ -7,3 +7,4 @@ def includeme(config):
     config.add_route('checkregistration', '/checkregistration')
     config.add_route('login_auth','/login_auth')
     config.add_route('logout','/logout')
+    config.add_route('del_user','/del_user')

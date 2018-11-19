@@ -4,7 +4,26 @@
     <title>Welcome to Admin Page here</title>
 </head>
 <body>
-<h1>Welcome to admin page here, dear ${first} ${last} !!</h1>
+<h1>Welcome to admin page here, dear  !!</h1>
+
+${admin} ${generic}
+<table class="table table-striped">
+<tr>
+    {% for column in ${Columns} %}
+        <td>{{ column }}</td>
+    {% endfor %}
+</tr>
+
+       {% for row in ${admin} %}
+           <tr>
+                {% for column in Columns %}
+                    <td>{{ row[column] }}</td>
+                {% endfor %}
+           </tr>
+       {% endfor %}
+
+</table>
+
 <input type = "button" onclick="location.href='logout';" class = "col-md-2 col-lg-2" value = "LogOut">
 </body>
 </html>
