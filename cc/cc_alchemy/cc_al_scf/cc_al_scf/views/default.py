@@ -32,14 +32,18 @@ def login_auth(request):
 	email = data['email']
 	pwd = data['pwd']
 	auth = mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserInfo.email.like(email), models.mymodel.UserInfo.password.like(pwd))).first()
-	print("length of the query login is ", len(auth))
+	#print("length of the query login is ", len(auth))
+	print("auth is ",auth)
+	role_check = mymodel.DBSession.query(models.mymodel.UserRoles).filter(and_(models.mymodel.UserRoles.email.like(email), models.mymodel.UserRoles.role.like("admin"))).first()
+	print("role_check is ",role_check)
 	#email_exists = mymodel.DBSession.query(models.mymodel.UserInfo).filter(models.mymodel.UserInfo.email == email).all()
 	#if(len(auth)>1):
 	#	pwd = mymodel.DBSession.query(models.mymodel.UserInfo).filter(models.mymodel.UserInfo.email == email).all()
-	exist = (len(auth)!=0)
-	print(exists)
+	#exist = (len(auth)!=0)
+	#print(exists)
+	# get fname , lname amd redirect with role
 	return {
-	state: success
+	'state' : "success"
 	}
 
 
@@ -107,6 +111,7 @@ def userlogin(request):
 			                          'last' : "lname"
 			                          })
 			else:
+				# add code to render tabe data to the admin page
 				return render_to_response(renderer_name = '../templates/admin.pt',
 			                          value = {
 			                          'first' : "admin",
@@ -125,14 +130,27 @@ def userlogin(request):
 		email = request.POST['emailid']# exxception here......
 		pwd = request.POST['password']
 		cred_exists = mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserInfo.email == email,models.mymodel.UserInfo.password == pwd)).all()
+		role_admin =  mymodel.DBSession.query(models.mymodel.UserInfo).filter(and_(models.mymodel.UserRoles.email == email,models.mymodel.UserRoles.role == "admin")).all()
 		print(len(cred_exists))
+		print(len(role_admin))
 		if(len(cred_exists)>=1):
 			# user credentaila exsts here , henc login
 			# get data from DB here.
 			# print(cred_exists)
 			# print(cred_exists[0].first_name)
 			# print(cred_exists[0].last_name)
-			return { 'first': cred_exists[0].first_name, 'last': cred_exists[0].last_name}
+			if(len(role_admin)>=1):
+				return render_to_response(renderer_name = '../templates/admin.pt',
+			                          value = {
+			                          'first': cred_exists[0].first_name,
+			                          'last': cred_exists[0].last_name
+			                          })
+			else:
+				return render_to_response(renderer_name = '../templates/home.pt',
+			                          value = {
+			                          'first': cred_exists[0].first_name,
+			                          'last': cred_exists[0].last_name
+			                          })
 		else:
 			print("incorect credentials")
 			render_to_response('../templates/login.pt',

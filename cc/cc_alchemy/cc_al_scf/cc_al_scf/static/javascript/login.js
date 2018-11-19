@@ -18,7 +18,7 @@ $(document).ready(function(){
         		});
 	     	}
 	    }
-	    alert("the fields cannot be empty")
+	    //alert("the fields cannot be empty")
 	});
 });
     
